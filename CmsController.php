@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
-use App\Models\Cms;
+use App\Models\cms;
 
 class CmsController extends Controller
 {
@@ -13,28 +13,28 @@ class CmsController extends Controller
 
     public function  index(Request $request){   
        
-        $input=Cms::all();  
-      
-        return view('cms',compact('input'));
+        $input=cms::all();  
+  
+        return view('pages',compact('input'));
     }
 
 
     public function  cms(){     
-        return view('addcms');
+        return view('addpages');
     }
 
 
     public function editcms($id)
     {
-        $input = Cms::where('id', $id)->first();
-        return view('editcms', compact('input'));
+        $input = cms::where('id', $id)->first();
+        return view('editpages', compact('input'));
     }
 
 
     public function updatecms(Request $request, $id)
     {      
         
-        $input=$request->only(['name','content','snumber','status']);
+        $input=$request->only(['name','content','image']);
        
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -49,7 +49,7 @@ class CmsController extends Controller
        
         $input['image'] =$photoUrl;
      
-        Cms::where('id', $id)->update($input);
+        cms::where('id', $id)->update($input);
          return redirect('index');
          
     }
@@ -61,8 +61,7 @@ class CmsController extends Controller
         $validated = $request->validate([
             'name' => 'required|max:20',
             'content' => 'required',
-            'snumber' => 'required',
-            'status' => 'required',
+          
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
        
@@ -77,9 +76,9 @@ class CmsController extends Controller
             $photoUrl = url('/images/' . $fileName);
         }
 
-        $input=$request->only(['name','content','snumber','status']);
+        $input=$request->only(['name','content','image']);
         $input['image'] =$photoUrl;
-        $input = Cms::create($input);
+        $input = cms::create($input);
       
         return redirect('cms');
     }
@@ -92,3 +91,4 @@ class CmsController extends Controller
         return redirect()->back();
     }
 }
+
